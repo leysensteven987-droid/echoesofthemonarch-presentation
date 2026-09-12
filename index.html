@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Carried over from the gate page the build used to emit. Dropping the
+     passphrase (2026-08-18) opened the site to anyone with the link; it is a
+     SEPARATE decision to also invite the crawlers, and that one has not been
+     made. Delete this line when the game wants to be found — but note it is the
+     one change here that is hard to take back, since an indexed page stays in
+     the search caches long after the tag returns. -->
+<meta name="robots" content="noindex, nofollow" />
+<title>Echoes of the Monarch — Every shadow remembers its king</title>
+<meta name="description" content="A real-time co-op dark-fantasy dungeon crawler. Raid the gates between worlds, harvest the dead into a shadow army, and grow your guild hall from the spoils." />
+
+<!-- Open Graph / social preview -->
+<meta property="og:title" content="Echoes of the Monarch" />
+<meta property="og:description" content="Raid the gates. Harvest the dead. Command a shadow army." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="assets/logo-primary.svg" />
+
+<link rel="icon" type="image/svg+xml" href="assets/emblem-icon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    /* Brand palette, lifted from logo-primary.svg / emblem-icon.svg */
+    --void-0:   #0c0a1c;
+    --void-1:   #150f29;
+    --purple-1: #251741;
+    --purple-2: #46295f;
+    --teal:     #7fd6d0;
+    --teal-soft:#8fd3cd;
+    --teal-hot: #aef3ee;
+    --teal-deep:#2f8f88;
+    --silver:   #b9d3e0;
+    --crimson:  #e0455f;
+    --crimson-hot: #ff6177;
+    --lavender: #9a8fbf;
+    --ink:      #d9cdf2;
+
+    --maxw: 1120px;
+    --display: 'Cinzel', Georgia, serif;
+    --body: 'EB Garamond', Georgia, serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--body);
+    color: var(--ink);
+    background: var(--void-0);
+    font-size: 18px;
+    line-height: 1.65;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--teal-soft); text-decoration: none; }
+
+  h1, h2, h3, .display { font-family: var(--display); font-weight: 600; }
+  ::selection { background: rgba(127,214,208,0.25); color: #fff; }
+
+  /* ---------- shared layout ---------- */
+  .wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+  section { position: relative; padding: 96px 0; }
+  .eyebrow {
+    font-family: var(--display);
+    font-size: 13px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--teal); opacity: 0.85; margin: 0 0 14px;
+  }
+  .section-title {
+    font-size: clamp(28px, 4vw, 44px); letter-spacing: 0.06em;
+    margin: 0 0 18px;
+    background: linear-gradient(180deg, #eef6fb 0%, #b9d3e0 55%, #7fa6bd 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .lede { color: var(--lavender); max-width: 60ch; margin: 0 auto; }
+  .center { text-align: center; }
+
+  /* ornamental divider: —◆— , echoes the wordmark motif */
+  .rule { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 0 auto 30px; }
+  .rule .line { width: 70px; height: 1px; background: linear-gradient(90deg, transparent, var(--teal-deep)); }
+  .rule .line.r { background: linear-gradient(90deg, var(--teal-deep), transparent); }
+  .rule .gem { width: 11px; height: 11px; transform: rotate(45deg); background: var(--teal); box-shadow: 0 0 12px var(--teal); }
+
+  /* ---------- hero ---------- */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 80px 24px 60px; position: relative; overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 50% 18%, var(--purple-2) 0%, var(--purple-1) 38%, var(--void-0) 78%);
+  }
+  /* embers canvas sits behind content */
+  #embers { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .hero > * { position: relative; z-index: 1; }
+  /* vignette to deepen edges, matching the gate-void feel */
+  .hero::after {
+    content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(120% 100% at 50% 40%, transparent 55%, rgba(5,3,9,0.7) 100%);
+  }
+
+  .hero-logo { width: min(760px, 92vw); height: auto; filter: drop-shadow(0 18px 60px rgba(0,0,0,0.6)); animation: rise 1.2s ease both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+  .hero-tag {
+    font-family: var(--display); font-weight: 500;
+    letter-spacing: 0.34em; text-transform: uppercase;
+    font-size: clamp(11px, 1.5vw, 15px); color: var(--lavender);
+    margin: 6px 0 30px; opacity: 0; animation: fade 1s 0.5s ease both;
+  }
+  .hero-pitch {
+    max-width: 56ch; margin: 0 auto 36px; color: var(--ink); font-size: clamp(17px, 2vw, 21px);
+    opacity: 0; animation: fade 1s 0.75s ease both;
+  }
+  .hero-pitch em { color: var(--teal-soft); font-style: normal; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+  .cta-row { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; opacity: 0; animation: fade 1s 1s ease both; }
+  .btn {
+    font-family: var(--display); font-size: 14px; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 14px 28px; border-radius: 2px; cursor: pointer; transition: all 0.25s ease;
+    border: 1px solid transparent; display: inline-flex; align-items: center; gap: 10px;
+  }
+  .btn-primary {
+    color: var(--void-0); border-color: var(--teal);
+    background: linear-gradient(180deg, var(--teal-hot), var(--teal));
+    box-shadow: 0 0 24px rgba(127,214,208,0.35);
+  }
+  .btn-primary:hover { box-shadow: 0 0 40px rgba(127,214,208,0.6); transform: translateY(-2px); }
+  .btn-ghost { color: var(--silver); border-color: rgba(169,205,214,0.35); background: rgba(255,255,255,0.02); }
+  .btn-ghost:hover { border-color: var(--teal); color: var(--teal-hot); }
+
+  .scroll-hint { margin-top: 56px; color: var(--lavender); font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.6; animation: bob 2.4s ease-in-out infinite; }
+  @keyframes bob { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(6px);} }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* ---------- pillars ---------- */
+  .pillars { background: linear-gradient(180deg, var(--void-0), var(--void-1)); }
+  .grid { display: grid; gap: 20px; }
+  .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid.cols-5 { grid-template-columns: repeat(5, 1fr); }
+
+  .card {
+    background: linear-gradient(180deg, rgba(70,41,95,0.18), rgba(12,10,28,0.4));
+    border: 1px solid rgba(127,214,208,0.14);
+    border-radius: 6px; padding: 28px; position: relative; overflow: hidden;
+    transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(127,214,208,0.5), transparent);
+    opacity: 0; transition: opacity 0.3s ease;
+  }
+  .card:hover { border-color: rgba(127,214,208,0.4); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(5,3,9,0.5); }
+  .card:hover::before { opacity: 1; }
+  .card h3 { font-size: 21px; letter-spacing: 0.04em; margin: 0 0 10px; color: var(--teal-soft); }
+  .card p { margin: 0; color: var(--lavender); font-size: 16px; }
+  .card .num { font-family: var(--display); font-size: 13px; color: var(--teal-deep); letter-spacing: 0.2em; }
+
+  /* class cards */
+  .class-card { text-align: center; }
+  .class-card .role { display: block; font-family: var(--display); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--crimson-hot); opacity: 0.9; }
+  .class-card.flagship { border-color: rgba(224,69,95,0.3); background: linear-gradient(180deg, rgba(70,41,95,0.28), rgba(58,15,22,0.22)); }
+  .class-card.flagship .role { color: var(--crimson-hot); }
+  .class-card.flagship h3 { color: var(--teal-hot); }
+  /* the outsider — forest-green, set apart from the death-court's crimson/teal */
+  .class-card.outsider { border-color: rgba(120,200,110,0.32); background: linear-gradient(180deg, rgba(34,64,38,0.30), rgba(18,34,20,0.22)); }
+  .class-card.outsider .role { color: #8FD96B; }
+  .class-card.outsider h3 { color: #8FD96B; }
+
+  /* class sprite portraits — front-facing (south) frame from art/sprites/classes/<id> */
+  .portrait { position: relative; height: 104px; margin: 2px auto 16px; display: flex; align-items: flex-end; justify-content: center; }
+  /* ground-glow seats the sprite and reads as its shadow (teal; crimson for the flagship) */
+  .portrait::after {
+    content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 84px; height: 22px; border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(127,214,208,0.30), transparent 70%);
+  }
+  .class-card.flagship .portrait::after { background: radial-gradient(ellipse at center, rgba(224,69,95,0.32), transparent 70%); }
+  .class-card.outsider .portrait::after { background: radial-gradient(ellipse at center, rgba(120,200,110,0.32), transparent 70%); }
+  /* float lives on the wrapper so the hover lift on the img doesn't fight the keyframes */
+  .bob { animation: float 5s ease-in-out infinite; will-change: transform; }
+  .portrait img {
+    display: block; width: 96px; height: auto; image-rendering: pixelated;
+    filter: drop-shadow(0 7px 9px rgba(0,0,0,0.55));
+    transition: transform 0.35s ease, filter 0.35s ease;
+  }
+  .card:hover .portrait img { transform: translateY(-5px) scale(1.05); filter: drop-shadow(0 13px 15px rgba(0,0,0,0.6)); }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+  /* the Blightwarden's two seasons — Wild ⇄ Grove */
+  .forms { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 8px auto 4px; flex-wrap: wrap; }
+  .form { flex: 1 1 180px; max-width: 210px; }
+  .form .portrait { margin-bottom: 8px; }
+  .form .fname { display: block; font-family: var(--display); font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; color: #8FD96B; }
+  .form .fdesc { display: block; margin-top: 4px; font-size: 14px; color: var(--lavender); line-height: 1.5; }
+  .form-swap {
+    font-size: 26px; color: #8FD96B; opacity: 0.85; flex: 0 0 auto; align-self: center;
+    text-shadow: 0 0 14px rgba(120,200,110,0.5); animation: swaybob 5s ease-in-out infinite;
+  }
+  @keyframes swaybob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  @media (max-width: 480px) { .form-swap { transform: rotate(90deg); width: 100%; } }
+
+  /* ---------- the loop ---------- */
+  .loop { background: linear-gradient(180deg, var(--void-1), var(--void-0)); }
+  .loop-chain { display: flex; flex-wrap: wrap; align-items: stretch; justify-content: center; gap: 14px; margin-top: 30px; }
+  .loop-step {
+    flex: 1 1 200px; min-width: 200px; text-align: center; padding: 24px 18px;
+    border: 1px solid rgba(127,214,208,0.16); border-radius: 6px;
+    background: rgba(70,41,95,0.12);
+  }
+  .loop-step .k { font-family: var(--display); font-size: 12px; letter-spacing: 0.2em; color: var(--teal); text-transform: uppercase; }
+  .loop-step h4 { font-family: var(--display); margin: 8px 0 6px; font-size: 18px; color: var(--ink); }
+  .loop-step p { margin: 0; font-size: 14px; color: var(--lavender); }
+  .loop-arrow { display: flex; align-items: center; color: var(--teal-deep); font-size: 22px; }
+
+  /* ---------- realms ---------- */
+  .realms { background: radial-gradient(110% 80% at 50% 0%, var(--purple-1) 0%, var(--void-0) 60%); }
+  .realm-list { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 26px; }
+  .realm {
+    font-family: var(--display); font-size: 14px; letter-spacing: 0.12em;
+    padding: 10px 18px; border: 1px solid rgba(169,205,214,0.2); border-radius: 100px;
+    color: var(--silver); background: rgba(12,10,28,0.4); transition: all 0.25s ease;
+  }
+  .realm:hover { border-color: var(--teal); color: var(--teal-hot); box-shadow: 0 0 18px rgba(127,214,208,0.25); }
+  .rank-bar { display: flex; justify-content: center; gap: 10px; margin-top: 34px; flex-wrap: wrap; }
+  .rank {
+    width: 46px; height: 46px; display: grid; place-items: center; border-radius: 6px;
+    font-family: var(--display); font-weight: 700; font-size: 20px;
+    border: 1px solid rgba(127,214,208,0.25); color: var(--teal-soft); background: rgba(70,41,95,0.18);
+  }
+  .rank.s { color: var(--crimson-hot); border-color: rgba(224,69,95,0.5); box-shadow: 0 0 20px rgba(224,69,95,0.3); }
+
+  /* ---------- devlog / what's new ---------- */
+  .devlog { background: linear-gradient(180deg, var(--void-0), var(--void-1)); }
+  .devlog-list { max-width: 720px; margin: 36px auto 0; text-align: left; }
+  .devlog-entry { position: relative; padding: 0 0 26px 28px; border-left: 1px solid rgba(127,214,208,0.18); }
+  .devlog-entry:last-child { padding-bottom: 0; }
+  .devlog-entry::before {
+    content: ""; position: absolute; left: -6px; top: 4px; width: 11px; height: 11px;
+    transform: rotate(45deg); background: var(--teal); box-shadow: 0 0 12px var(--teal);
+  }
+  .devlog-entry .date { font-family: var(--display); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--teal); }
+  .devlog-entry h4 { font-family: var(--display); margin: 6px 0 6px; font-size: 19px; color: var(--ink); }
+  .devlog-entry p { margin: 0; color: var(--lavender); font-size: 16px; }
+
+  /* ---------- state of the game (overview) ---------- */
+  .overview { background: radial-gradient(110% 80% at 50% 0%, var(--purple-1) 0%, var(--void-0) 62%); }
+  .status-card { text-align: left; }
+  .status-card .tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--display); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 100px; margin-bottom: 4px;
+  }
+  .status-built .tag   { color: #8fe6b0; background: rgba(80,200,140,0.12); border: 1px solid rgba(120,220,160,0.3); }
+  .status-next .tag    { color: var(--teal-hot); background: rgba(127,214,208,0.12); border: 1px solid rgba(127,214,208,0.32); }
+  .status-design .tag  { color: var(--lavender); background: rgba(154,143,191,0.12); border: 1px solid rgba(154,143,191,0.3); }
+  .status-card h3 { margin: 12px 0 10px; }
+  .status-card ul { margin: 0; padding: 0; list-style: none; }
+  .status-card li { position: relative; padding: 0 0 9px 18px; color: var(--lavender); font-size: 15px; line-height: 1.5; }
+  .status-card li::before { content: "◆"; position: absolute; left: 0; top: 0; color: var(--teal-deep); font-size: 10px; }
+  .status-card li:last-child { padding-bottom: 0; }
+  .status-card li b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- the ledger (auto-built from RELEASE_NOTES.md) ---------- */
+  .ledger { max-width: 840px; margin: 40px auto 0; text-align: left; }
+  .log-day { margin-bottom: 34px; }
+  .log-date {
+    font-family: var(--display); font-size: 13px; letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--teal); margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid rgba(127,214,208,0.14);
+  }
+  .log-entries { list-style: none; margin: 0; padding: 0; }
+  .log-entries li {
+    position: relative; padding: 0 0 16px 22px; margin-left: 4px;
+    border-left: 1px solid rgba(127,214,208,0.14);
+  }
+  .log-entries li::before {
+    content: ""; position: absolute; left: -5px; top: 9px; width: 9px; height: 9px;
+    transform: rotate(45deg); background: var(--teal-deep);
+  }
+  .log-entries li:last-child { border-left-color: transparent; padding-bottom: 0; }
+  .log-entries p { margin: 0; color: var(--lavender); font-size: 15px; line-height: 1.62; }
+  .ledger code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.82em;
+    color: var(--teal-hot); background: rgba(127,214,208,0.10); padding: 1px 6px; border-radius: 4px;
+  }
+  .ledger strong { color: var(--ink); font-weight: 600; }
+  .ledger em { color: var(--silver); font-style: italic; }
+  .ledger a { color: var(--teal-soft); border-bottom: 1px dotted rgba(127,214,208,0.4); }
+
+  /* ---------- final CTA / footer ---------- */
+  .finale { text-align: center; background: radial-gradient(100% 90% at 50% 100%, var(--purple-2) 0%, var(--void-0) 70%); }
+  .finale .emblem { width: 96px; height: 96px; margin: 0 auto 24px; display: block; filter: drop-shadow(0 8px 30px rgba(0,0,0,0.6)); }
+  footer { border-top: 1px solid rgba(127,214,208,0.1); padding: 32px 0; text-align: center; color: var(--lavender); font-size: 13px; letter-spacing: 0.06em; }
+  footer .note { opacity: 0.5; font-size: 12px; margin-top: 8px; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px) {
+    .grid.cols-3 { grid-template-columns: repeat(2, 1fr); }
+    .grid.cols-5 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    section { padding: 72px 0; }
+    .grid.cols-2, .grid.cols-3, .grid.cols-5 { grid-template-columns: 1fr; }
+    .loop-arrow { transform: rotate(90deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <canvas id="embers" aria-hidden="true"></canvas>
+  <img class="hero-logo" src="assets/logo-primary.svg" alt="Echoes of the Monarch" />
+  <p class="hero-tag">Every shadow remembers its king</p>
+  <p class="hero-pitch">
+    Five hunters raid the gates between worlds, <em>harvest the dead into a shadow army</em>,
+    and grow their guild hall from the spoils.
+  </p>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="#pillars">Enter the Gate</a>
+    <a class="btn btn-ghost" href="#classes">Meet the Dark Five</a>
+  </div>
+  <div class="scroll-hint">Scroll into the dark ↓</div>
+</header>
+
+<!-- ============ PILLARS ============ -->
+<section class="pillars" id="pillars">
+  <div class="wrap center reveal">
+    <div class="rule"><span class="line"></span><span class="gem"></span><span class="line r"></span></div>
+    <p class="eyebrow">The Promise</p>
+    <h2 class="section-title">A dark mythic fairytale</h2>
+    <p class="lede">
+      Not grimdark — beautiful, wistful, a little mournful. Polished pixel art over a fallen, twilight world.
+      Four pillars hold the whole thing up.
+    </p>
+  </div>
+  <div class="wrap" style="margin-top:46px;">
+    <div class="grid cols-2 reveal">
+      <div class="card">
+        <span class="num">I</span>
+        <h3>The raid feels good</h3>
+        <p>Responsive real-time co-op combat is the foundation everything else hangs on.</p>
+      </div>
+      <div class="card">
+        <span class="num">II</span>
+        <h3>Loot has many fates</h3>
+        <p>Every drop is a decision: equip it, sell it, feed it to your shadows, or break it for mats.</p>
+      </div>
+      <div class="card">
+        <span class="num">III</span>
+        <h3>Risk is the reward</h3>
+        <p>Refining gear, raising shadows, descending deeper gates — the thrill lives in the gamble.</p>
+      </div>
+      <div class="card">
+        <span class="num">IV</span>
+        <h3>A home worth returning to</h3>
+        <p>The guild hall grows with you and gives every raid a point.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE DARK FIVE ============ -->
+<section id="classes">
+  <div class="wrap center reveal">
+    <div class="rule"><span class="line"></span><span class="gem"></span><span class="line r"></span></div>
+    <p class="eyebrow">Choose your hunter</p>
+    <h2 class="section-title">The Dark Five</h2>
+    <p class="lede">A full party, the whole palette pushed dark. One commands an army; the rest hold the line.</p>
+  </div>
+  <div class="wrap" style="margin-top:46px;">
+    <div class="grid cols-5 reveal">
+      <div class="card class-card flagship">
+        <div class="portrait"><span class="bob"><img src="assets/sprites/shadow-monarch.png" data-sprite="shadow-monarch" alt="Shadow Monarch class sprite" width="96" /></span></div>
+        <span class="role">Summoner · Flagship</span>
+        <h3>Shadow Monarch</h3>
+        <p>"Arise" extraction. Commands a standing shadow army — the only class that fields a full host.</p>
+      </div>
+      <div class="card class-card">
+        <div class="portrait"><span class="bob" style="animation-delay:-0.9s"><img src="assets/sprites/reaper.png" data-sprite="reaper" alt="Reaper class sprite" width="96" /></span></div>
+        <span class="role">Melee DPS</span>
+        <h3>Reaper</h3>
+        <p>Scythe burst, mobility, life-steal. Raises a single flash shadow on execute.</p>
+      </div>
+      <div class="card class-card">
+        <div class="portrait"><span class="bob" style="animation-delay:-1.8s"><img src="assets/sprites/crimson-knight.png" data-sprite="crimson-knight" alt="Crimson Knight class sprite" width="96" /></span></div>
+        <span class="role">Tank</span>
+        <h3>Crimson Knight</h3>
+        <p>Holds the front and sustains through lifedrain. A tank–DPS hybrid.</p>
+      </div>
+      <div class="card class-card">
+        <div class="portrait"><span class="bob" style="animation-delay:-2.7s"><img src="assets/sprites/hexer.png" data-sprite="hexer" alt="Hexer class sprite" width="96" /></span></div>
+        <span class="role">Control</span>
+        <h3>Hexer</h3>
+        <p>Curses, damage-over-time, and crowd control that breaks the enemy's tempo.</p>
+      </div>
+      <div class="card class-card">
+        <div class="portrait"><span class="bob" style="animation-delay:-3.6s"><img src="assets/sprites/plague-doctor.png" data-sprite="plague-doctor" alt="Plague Doctor class sprite" width="96" /></span></div>
+        <span class="role">Support</span>
+        <h3>Plague Doctor</h3>
+        <p>A dark healer — mends by siphoning, buffs through sacrifice. Grave-themed, never holy.</p>
+      </div>
+    </div>
+  </div>
+  <!-- the outsider — apart from the Five -->
+  <div class="wrap center reveal" style="margin-top:66px; max-width:560px;">
+    <div class="rule"><span class="line"></span><span class="gem"></span><span class="line r"></span></div>
+    <p class="eyebrow">…and the one from the wood</p>
+    <p class="lede">Not one of the Five — an outsider who shares the dark, but not the death-creed.</p>
+    <div class="card class-card outsider" style="margin-top:26px;">
+      <div class="portrait"><span class="bob" style="animation-delay:-4.5s"><img src="assets/sprites/blightwarden.png" data-sprite="blightwarden" alt="Blightwarden class sprite" width="96" /></span></div>
+      <span class="role">Bruiser · Zone-control</span>
+      <h3>Blightwarden</h3>
+      <p>A dark druid — the wild green-dark that grows over the death-court's graves. He claims the dungeon floor with creeping rot-overgrowth, composts the dead into power, and shifts between two seasons of himself:</p>
+      <div class="forms">
+        <div class="form">
+          <div class="portrait"><span class="bob" style="animation-delay:-2.4s"><img src="assets/sprites/blightwarden-wild.png" data-sprite="blightwarden-wild" alt="Blightwarden — Wild form" width="96" /></span></div>
+          <span class="fname">Wild</span>
+          <span class="fdesc">The hunt. An antlered beast that rends, bleeds, and drags the fight onto its own ground.</span>
+        </div>
+        <div class="form-swap" aria-hidden="true">⇄</div>
+        <div class="form">
+          <div class="portrait"><span class="bob" style="animation-delay:-3.1s"><img src="assets/sprites/blightwarden-grove.png" data-sprite="blightwarden-grove" alt="Blightwarden — Grove form" width="96" /></span></div>
+          <span class="fname">Grove</span>
+          <span class="fdesc">The deep root. A half-tree caster that walls, entangles, and lets the rot do the patient work.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE LOOP ============ -->
+<section class="loop">
+  <div class="wrap center reveal">
+    <div class="rule"><span class="line"></span><span class="gem"></span><span class="line r"></span></div>
+    <p class="eyebrow">The core loop</p>
+    <h2 class="section-title">Raid. Return. Reinvest. Descend.</h2>
+    <p class="lede">A dungeon-crawler's pulse: shared real-time combat, then a quiet hall to spend the spoils.</p>
+  </div>
+  <div class="wrap reveal">
+    <div class="loop-chain">
+      <div class="loop-step">
+        <div class="k">Raid a Gate</div>
+        <h4>Harvest the dead</h4>
+        <p>Real-time co-op combat. Claim shadows and instanced personal loot.</p>
+      </div>
+      <div class="loop-arrow">◆</div>
+      <div class="loop-step">
+        <div class="k">Return to the Hall</div>
+        <h4>Tend the army</h4>
+        <p>Sell loot, manage shadows, craft and refine your gear.</p>
+      </div>
+      <div class="loop-arrow">◆</div>
+      <div class="loop-step">
+        <div class="k">Reinvest Gold</div>
+        <h4>Grow the guild</h4>
+        <p>Upgrade hall facilities — blacksmith, summoning altar, market.</p>
+      </div>
+      <div class="loop-arrow">◆</div>
+      <div class="loop-step">
+        <div class="k">Deeper Gates</div>
+        <h4>Climb the ranks</h4>
+        <p>Higher rank, better loot, harder bosses. Then begin again.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REALMS ============ -->
+<section class="realms">
+  <div class="wrap center reveal">
+    <div class="rule"><span class="line"></span><span class="gem"></span><span class="line r"></span></div>
+    <p class="eyebrow">The world</p>
+    <h2 class="section-title">Gates into the Nine Realms</h2>
+    <p class="lede">
+      Rifts open onto Yggdrasil's realms — each a distinct mythic world, each its own legend.
+      Gates are graded by rank; the deeper you go, the less the dark gives back freely.
+    </p>
+    <div class="realm-list">
+      <span class="realm">Niflheim</span>
+      <span class="realm">Muspelheim</span>
+      <span class="realm">Helheim</span>
+      <span class="realm">Jotunheim</span>
+      <span class="realm">Alfheim</span>
+      <span class="realm">Svartalfheim</span>
+      <span class="realm">Vanaheim</span>
+      <span class="realm">Midgard</span>
+      <span class="realm">Asgard</span>
+    </div>
+    <div class="rank-bar" aria-label="Gate ranks E through S">
+      <span class="rank">E</span>
+      <span class="rank">D</span>
+      <span class="rank">C</span>
+      <span class="rank">B</span>
+      <span class="rank">A</span>
+      <span class="rank s">S</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATE OF THE GAME (overview) ============ -->
+<section class="overview" id="overview">
+  <div class="wrap center reveal">
+    <div class="rule"><span class="line"></span><span class="gem"></span><span class="line r"></span></div>
+    <p class="eyebrow">For the party's eyes</p>
+    <h2 class="section-title">State of the Game</h2>
+    <p class="lede">
+      Where the build actually stands — what you can play today, what's next on the bench,
+      and what's fully designed and waiting its turn.
+    </p>
+  </div>
+  <div class="wrap" style="margin-top:46px;">
+    <div class="grid cols-3 reveal">
+      <div class="card status-card status-built">
+        <span class="tag">✅ Playable now</span>
+        <h3>The combat slice</h3>
+        <ul>
+          <li><b>Real co-op netcode</b> — authoritative Colyseus server; you're predicted &amp; reconciled, everyone else interpolated. No rubber-banding.</li>
+          <li><b>Move &amp; fight</b> — click-to-move or arrow keys, a follow camera, mouse-wheel zoom.</li>
+          <li><b>An enemy that bites back</b> — the Grave Thrall chases, hits, dies, and respawns.</li>
+          <li><b>The Reaper</b> — life-steal swings, an <b>execute</b> finisher, and a flash-shadow raised from the slain.</li>
+          <li><b>Loot</b> — your own personal drops, auto-loot, rarity tiers, and a loot filter.</li>
+          <li><b>Around it</b> — title screen with a gate-rank (E→S) picker, control options, an animated Reaper &amp; Grave Thrall (idle + walk), CI, and latency test-tooling.</li>
+        </ul>
+      </div>
+      <div class="card status-card status-next">
+        <span class="tag">🔜 Up next</span>
+        <h3>Make it feel good</h3>
+        <ul>
+          <li>The slice works — the next pass is the <b>throttled-network feel test</b>: does the co-op loop still feel smooth at real ping, not just on localhost?</li>
+          <li>That's the gate everything in Phase 2 waits behind. Prove the loop, then build on it.</li>
+        </ul>
+      </div>
+      <div class="card status-card status-design">
+        <span class="tag">📐 Designed, not built</span>
+        <h3>The road ahead</h3>
+        <ul>
+          <li><b>The armory</b> — 10-slot gear, rolled affixes, sockets &amp; cards, the loot roller.</li>
+          <li><b>The Dark Five + the Blightwarden</b> — full kits written up.</li>
+          <li><b>Skill trees &amp; job advancement</b>, the enemy roster (~70 creatures), and the harvest economy.</li>
+          <li><b>Gates &amp; floors</b> — hybrid-generated dungeons and the Yggdrasil Gate Board.</li>
+          <li><b>The guild hall</b> — selling, refining, crafting, and the standing shadow army.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEVLOG / WHAT'S NEW ============ -->
+<!--
+  The Ledger is generated from planning/RELEASE_NOTES.md by site/build.mjs and
+  injected at the ledger token below. Do NOT hand-edit entries here -
+  edit RELEASE_NOTES.md (e.g. via /echo) and re-run `node site/build.mjs`.
+-->
+<section class="devlog" id="devlog">
+  <div class="wrap center reveal">
+    <div class="rule"><span class="line"></span><span class="gem"></span><span class="line r"></span></div>
+    <p class="eyebrow">From the workshop</p>
+    <h2 class="section-title">The Ledger</h2>
+    <p class="lede">The full build history, newest first — every milestone, exactly as it was written down.</p>
+  </div>
+  <div class="wrap">
+    <div class="ledger">
+    <section class="log-day reveal">
+      <h3 class="log-date">2026-09-06</h3>
+      <ul class="log-entries">
+        <li><p><code>[client]</code> <strong>Gate rank is now player-facing — the title screen gets an E→S picker.</strong> The room-state <code>gateRank</code> (server-owned since 2026-07-10, but nothing ever sent one at creation) is now proposed by the player: a new gate row on the title screen (<code>TitleScreen.tsx</code>) lets you pick <strong>E→S</strong>, persisted to <code>localStorage</code> (<code>etom.gateRank</code>), and <code>joinGame()</code> passes it as <code>{ gateRank }</code> to <code>client.joinOrCreate("game", …)</code>. The header shows the room's <strong>authoritative</strong> <code>GameState.gateRank</code> synced back from the server (<code>App.tsx</code>, via <code>getStateCallbacks(room).listen</code>) — never the player's raw pick, per invariant #1. <strong>Honest caveat:</strong> this slice still shares <strong>one room</strong> via <code>joinOrCreate</code>, so the proposed rank only takes effect for whoever <strong>creates</strong> the room; a second player joining an existing room inherits its real rank regardless of what they picked, and sees that truth in the header. Proper per-run gate selection is the Phase 2 <strong>Gate Board</strong> (<code>WORLDMAP.md</code> §10.5) — this is a slice-scoped stopgap, not that system. <strong>Client-only</strong> — the server/shared validation (<code>isGateRank</code>), defaulting, and enemy/loot scaling already existed and are unchanged; not breaking, nothing to re-pull.</p></li>
+        <li><p><code>[client]</code> <code>[art]</code> <strong>The Reaper and Grave Thrall walk now — not just idle.</strong> Both directional sprites go from a single idle loop (Reaper) / static frame (Grave Thrall) to full <strong>idle + walk</strong> cycles per facing, regenerated via the PixelLab pipeline and served through <code>art/sprites/serve-animations.mjs</code>. <code>MainScene.ts</code> now tracks per-entity frame size <strong>per direction</strong> (diagonal facings render wider than cardinals — isometric perspective, no longer a single <code>REAPER_FRAME_PX</code> constant) and switches each sprite between its <code>idle-&lt;dir&gt;</code> and <code>walk-&lt;dir&gt;</code> animation based on frame-to-frame motion, excluding the hit-lunge offset so a recoil never fakes a walk cycle. The old static Reaper idle strips are archived under <code>art/sprites/_archive/reaper-legacy-idle/</code>. Cosmetic only — positions stay server-authoritative + interpolated (invariants #1/#3).</p></li>
+        <li><p><code>[shell]</code> <strong>Phone shell — brand/UI kit refresh + its own Cloudflare Tunnel.</strong> The mobile command console adopts a shared, role-based token contract (new <code>kit/tokens.css</code>, mirrored from Kage-Gumi's mobile shell) with a dedicated <code>brand-eotm.css</code> binding those roles to EOTM's void/teal/crimson/gold palette — the one file allowed to diverge between the two shells. Font stack moves DM Sans → <strong>Inter</strong> (body/data) + <strong>IBM Plex Mono</strong> (code), Cinzel stays on the wordmark. Adds a sprite browser (<code>/api/sprites</code>, token-gated, PNG-only, reusing an extracted <code>tokenGate()</code>), a splash/hold screen, a portrait-guard overlay, a full-screen message composer with a mic/dictation button, session filter/search/swipe actions, pull-to-refresh, haptics, and back-gesture handling; fixes a 59px gap under the docked tab bar on installed PWAs (iOS status-bar style <code>black-translucent</code> → <code>black</code>). <code>ecosystem.config.cjs</code> adds a second PM2 app, <code>eotm-tunnel</code> (cloudflared), giving EOTM its own tunnel independent of Kage-Gumi's — <code>README.md</code> rewritten to match (and corrects an earlier wrong claim about reusing KG's tunnel). <strong>Dev tooling only — touches no <code>server/</code>/<code>client/</code>/<code>shared/</code>/<code>content/</code> game code.</strong></p></li>
+      </ul>
+    </section>
+    <section class="log-day reveal">
+      <h3 class="log-date">2026-07-23</h3>
+      <ul class="log-entries">
+        <li><p><code>[shell]</code> <strong>Fix: SYSTEM ▸ STATUS chopped the first character off the first changed file.</strong> The panel listed <code>hell/command-server.mjs</code> where git had <code>shell/command-server.mjs</code>. Surfaced while diagnosing a *different* fault — STATUS and SERVICES were returning <strong>404</strong> on the box because PM2's <code>eotm-shell</code> was still serving pre-SYSTEM-tab code (a <code>git pull</code> updates the file on disk, but Node never reloads a running module); once a restart made the panel render at all, the truncation was visible. Cause: <code>sysGit()</code> ran <code>.trim()</code> over git's stdout, but <code>git status --porcelain</code> encodes staged/unstaged state in two leading columns, so an unstaged-only modification emits a <strong>literal leading space</strong> (<code>" M path"</code>). The trim ate that space on the <strong>first line only</strong>, shifting it one character left, and the <code>l.slice(3)</code> path parse — which assumes the fixed <code>XY&lt;space&gt;path</code> layout — then cut one character too deep. Lines 2+ kept their space and rendered correctly, which is exactly why only the top entry looked wrong. <code>out</code> is now trimmed <strong>trailing-only</strong> (<code>.replace(/\s+$/, '')</code>), verified a no-op for all 15 other <code>sysGit</code> callers (<code>rev-parse</code>, <code>rev-list</code>, <code>log</code>, and the fix-action outputs never carry meaningful leading whitespace). The parse is also hardened into a <code>parsePorcelainLine()</code> helper: it keys "this line is intact" off the separator column, falls back to a 1-char status if a line ever arrives shifted (defence in depth), and resolves <strong>rename/copy</strong> entries (<code>old -&gt; new</code>) to the destination path; <code>git status</code> now runs under <code>-c core.quotePath=false</code> so non-ASCII paths come back literal instead of C-quoted. Display-only — no fix action ever consumed these paths, so nothing unsafe was reachable. <strong>Dev tooling only — touches no <code>server/</code>/<code>client/</code>/<code>shared/</code>/<code>content/</code> game code.</strong></p></li>
+        <li><p><code>[shell]</code> <strong>Phone shell v2 — a SYSTEM tab, live STOP, and session housekeeping.</strong> The mobile command console grows a second surface. <strong>SYSTEM</strong> is three segments over the box: <strong>STATUS</strong> (git divergence against <code>origin</code> — ahead/behind, dirty files — with <strong>tiered fix actions</strong>: *safe* fetch / pull <code>--ff-only</code> / push, a *clean*-tree-only rebase that auto-aborts on conflict, and *destructive* reset-hard / commit-all-and-push behind a typed-confirm gate), <strong>SERVICES</strong> (pm2 process control for <code>eotm-shell</code>, self-restart handled by answering the request *before* the socket drops), and <strong>PLANS</strong> (the planning docs, moved in from the old top-level tab). COMMAND gains a <strong>STOP</strong> button on a running turn — a Windows tree-kill (<code>taskkill /T</code>) of the <code>cmd.exe → claude</code> process, persisted as an *interrupted* (not failed) row the poller settles cleanly — plus a quick-replies kebab flyout and <strong>soft session close/reopen</strong> (a closed session hides from history unless asked for, and its stranded pending turn is reaped so it can't pin the reply-state forever). New server endpoints: <code>/api/shadow/turn/:id/interrupt</code>, <code>/api/shadow/session/:id/{close,reopen}</code>, <code>/api/system/git[/:action]</code>, <code>/api/system/services[/restart]</code> — every action a <strong>server-side whitelist</strong> (the path segment only ever indexes a fixed action map; no request string reaches the shell). <strong>Dev tooling only — touches no <code>server/</code>/<code>client/</code>/<code>shared/</code>/<code>content/</code> game code.</strong></p></li>
+        <li><p><code>[shell]</code> <strong>Fix: the console no longer snaps to the top when you navigate or reply.</strong> Every 4s poll / label tick / tab switch / transcript toggle rebuilds the whole view via <code>innerHTML</code>, which destroyed the scroll container and threw the reader back to the top; and a sent message spent its scroll-to-bottom intent on the hidden composer-hero frame, so it landed at the top instead of on its fresh pending bubble. <code>render()</code> now captures the live scroll offset of the COMMAND thread and the SYSTEM body *before* the rebuild and restores it *after*; <code>scrollWanted</code> pins the thread to the bottom only for genuinely new content (your message, a reply, a live-progress update) and is consumed only on a frame where the thread is actually visible. You stay where you were reading.</p></li>
+        <li><p><code>[shell]</code> <strong>The console is now an installable PWA.</strong> Added <code>manifest.webmanifest</code> (standalone, portrait, void-black theme) + PNG icons (192 / 512 / maskable + apple-touch), so *Add to Home Screen* yields a full-screen Monarch app instead of a browser tab.</p></li>
+      </ul>
+    </section>
+    <section class="log-day reveal">
+      <h3 class="log-date">2026-07-19</h3>
+      <ul class="log-entries">
+        <li><p><code>[shell]</code> <strong>Monarch phone shell — run the build + deploy pipeline from your phone.</strong> A new <code>shell/</code> tool (zero npm deps) lets Steven trigger EOTM builds from mobile, the way Kage-Gumi does. <code>command-server.mjs</code> is a token-gated HTTP server that streams live command output over SSE; the mobile page (<code>shell/public/index.html</code>, one self-contained file in the game's indigo/silver/crimson palette) shows grouped touch buttons — *Status · Pull · Install · Typecheck · Build all · Build gated site · <strong>Ship site</strong> · <strong>Full build + deploy</strong>*. The two deploy buttons need a confirm tap and end in <code>git commit + push</code>, which fires the existing <code>deploy-presentation</code> Action → <strong>echoes-of-the-monarch.com</strong>. Every command is a fixed <strong>server-side bash allowlist</strong> — the phone only ever sends a command *id*, never command text, so there's no injection surface; plus a one-command-at-a-time lock, a stop endpoint (SIGTERM→SIGKILL), and an SSE heartbeat for proxied connections. Runs on <strong>the box</strong> (not a laptop) under PM2 (<code>shell/ecosystem.config.cjs</code>, binds <code>127.0.0.1:5373</code> behind the box's TLS reverse proxy); the access token auto-generates into <code>shell/data/</code> (gitignored, never committed). <strong>Dev tooling only — touches no <code>server/</code>/<code>client/</code>/<code>shared/</code>/<code>content/</code> game code.</strong></p></li>
+      </ul>
+    </section>
+    <section class="log-day reveal">
+      <h3 class="log-date">2026-07-10</h3>
+      <ul class="log-entries">
+        <li><p><code>[server]</code> <code>[shared]</code> <strong>Selling — the economy loop closes.</strong> A player can now turn a bag item into personal gold. New <code>Sell</code> message + <code>SellMessage { seq, itemInstanceId }</code> in <code>shared/src/messages.ts</code>; <code>GameRoom.resolveSell</code> finds the item in the sender's <strong>bag only</strong> (equipped gear must be unequipped first — we never search <code>equipped</code>), removes it, and credits <code>Player.gold</code> by the item's <strong>own</strong> <code>sellValue</code> — read off the server-held instance, never a client-supplied price (invariants #1/#5). Silent on rejection; no stats recompute (a bag sell can't change the loadout). This makes two of the four §7b drop-fates real (*equip · sell*) and gives gold its first genuine source. <strong>⚠ shared (additive)</strong> — new message type + interface; existing clients keep working, but re-pull <code>shared/</code> to send/handle it. *Backend only — no client Sell button yet, so it's dormant in live play until the client wires it.*</p></li>
+        <li><p><code>[server]</code> <code>[content]</code> <code>[shared]</code> **Gate rank is now room state — deeper gates, better loot *and* tougher enemies (§10).** The hardcoded <code>CURRENT_GATE_RANK = "E"</code> constant is gone. A room takes its rank from creation options, validated server-side by a new <code>isGateRank</code> guard (+ <code>GATE_RANKS</code>) in <code>shared/src/items.ts</code> — untrusted input, defaults to <code>E</code> (invariant #1) — and holds it in the new synced <code>GameState.gateRank</code>. <code>dropLoot</code> now rolls at <code>this.state.gateRank</code>, so the loot roller's existing E→S rarity/value curve finally *varies per gate* (it was always capable; nothing chose the rank). Enemies scale too: <code>content/src/index.ts</code> gains <code>ENEMY_RANK_SCALAR</code> (E 1.0 → S 3.0) + a pure <code>scaledEnemy()</code> that multiplies <strong>HP and damage only</strong> (speed/ranges/cadence stay fixed, mirroring the roller's discrete-stat philosophy, invariant #6). The Grave Thrall is 60 HP / 6 dmg at E, <strong>180 HP / 18 dmg at S</strong>. New <code>enemyScaling.test.ts</code> (10 tests) covers the scaler + the guard. <strong>⚠ shared (additive)</strong> — new <code>gateRank</code> state field, <code>GATE_RANKS</code>, <code>isGateRank</code>; re-pull <code>shared/</code>. *Backend only — nothing sends <code>gateRank</code> at room creation yet, so live play still defaults to an E-gate until the client passes it.*</p></li>
+      </ul>
+    </section>
+    <section class="log-day reveal">
+      <h3 class="log-date">2026-07-04</h3>
+      <ul class="log-entries">
+        <li><p><code>[docs]</code> <strong>New operating rule — ask which model before executing (when Steven's at the keyboard).</strong> <code>CLAUDE.md</code> gains a *Model Selection* hard rule: before any <strong>substantive execution</strong> (writing/editing code, running builds, deploys, git commit/push, multi-step work) I stop and ask Steven which model — Opus / Sonnet / Haiku — then delegate that work to an <code>Agent</code> subagent pinned to his pick (the main session can't switch its own model; a subagent can). Read-only lookups, answering, and planning never trigger the ask. <strong>Autonomous runs decide for themselves</strong> — <code>/loop</code>, cron, background, and remote triggers proceed on a sensible default and never block on a prompt (no one's there to answer). Mirrors the same rule already in the Kage-Gumi repo. Docs/governance only — no game code.</p></li>
+        <li><p><code>[client]</code> <strong>The full loot filter — Phase 2's first client system.</strong> Phase 1's single <code>[F]</code> rarity threshold is replaced by a configurable, ordered <strong>rule engine</strong> (<code>client/src/lootFilter.ts</code>): each rule is a conjunction of optional criteria — rarity floor/ceiling, item type, min sell value, name substring — and an <strong>action</strong> (*hide / show / highlight*); rules apply top-to-bottom, <strong>first match wins</strong>, with a fallback for unmatched drops. The action drives both display and pickup: hidden drops dim and are never auto-looted, shown drops auto-loot, highlighted drops gain a pulsing rarity-colored <strong>beacon</strong>. Edited live in a new React panel (<code>LootFilterPanel.tsx</code>, open with <strong>[L]</strong>) and persisted to <code>localStorage</code>; the default ruleset demonstrates all four §8 goals (color-by-rarity, hide common junk, highlight cards/uniques, auto-pickup-only-what-passes). Pushed into the running Phaser scene without a reconnect. <strong>Entirely client-side — nothing touches <code>server/</code>, <code>shared/</code>, or <code>content/</code>.</strong></p></li>
+        <li><p><code>[client]</code> <strong>Manual-pickup mode — a new title-menu setting.</strong> Options now offers <strong>Auto-loot (instant)</strong> (the §8 default) vs <strong>Manual pickup ([G])</strong>: in manual mode, filter-passing drops sit on the ground — dimmed if hidden, beaconed if highlighted — until you press <strong>[G]</strong> to collect everything in reach, so highlighted loot is actually *visible* before it's grabbed. The filter still governs eligibility in both modes; <code>[G]</code> only ever collects what would auto-loot. Persisted like the control scheme; read once at connect. View-layer only — the server still authorizes every pickup (invariant #1).</p></li>
+        <li><p><code>[client]</code> <strong>Note for Levi (<code>server/</code>):</strong> item-*type* filtering ("highlight cards") currently derives an item's <code>type</code> <strong>client-side</strong> from <code>@etom/content</code> by <code>itemId</code> (<code>client/src/game/itemTypes.ts</code>) — a display stopgap that works for the static loot tables but won't resolve future server-rolled instance ids. The durable fix is one field: <code>@type("string") itemType</code> on <code>LootDrop</code> (<code>server/src/schema/GameState.ts</code>), set from <code>item.type</code> in <code>dropLoot()</code>. Small, non-breaking; flagged in the file header.</p></li>
+        <li><p><code>[client]</code> <strong>Interpolation delay widened 100 → 150 ms — closing the throttled-network gate.</strong> Running the slice under the existing netsim shim (<code>client/src/net/netsim.ts</code>, <code>?lag=&amp;jitter=</code>) surfaced the one tuning the localhost verifies could never reveal: at <code>TICK_RATE = 20</code> the server emits a snapshot every 50 ms, and with jitter the gap between consecutive *arrivals* can swing to ~130 ms — past the old 100 ms interp window, so the buffer periodically ran dry and remote players/enemies/shadows hitched. <code>INTERP_DELAY_MS</code> is now <strong>150 ms (3 ticks)</strong>, covering one interval plus the ~2× jitter swing. Local player is untouched (predicted, not interpolated), and <code>reconcile()</code> was deliberately left as a hard snap: server and client run the *same* <code>applyInput</code> over the *same* 1:1 input queue, so ack-timing jitter changes *when* reconciliation fires, never its *result* — there's no drift to soften (invariants #1/#3 hold).</p></li>
+        <li><p><code>[verify]</code> <strong>Phase 1 exit gate — objectively closed.</strong> Drove two headless clients (Playwright) through the committed shim and the title-screen connect flow at the friends profile (<code>?lag=60&amp;jitter=20</code> ≈ 120 ms RTT) <strong>and</strong> a harsher <code>?lag=120</code> (~240 ms RTT). Results, reproducible across runs: both clients <strong>join through the shim</strong> (reaching "connected" *is* the proof — the Colyseus handshake round-trips messages both ways over the delayed socket), then sustain ~7 s of concurrent click-to-move — <strong>both still connected, zero page errors</strong> — with the loop holding at ~240 ms too; <code>?lag=</code> absent installs nothing (true no-op, no banner, no errors). So the falsifiable failure modes the gate exists to catch — desync, disconnect, rubber-band, crash under latency — <strong>do not occur</strong>, and rubber-band is correct-by-construction (shared <code>applyInput</code> + 1:1 queue). <strong>Honest boundary:</strong> the shim's absolute *delay magnitude* isn't independently re-measured headlessly — its order-preserving transparency confounds every external probe (three were tried and abandoned), and it's already established by the committed shim + its install banner. The last 5% — the subjective *"does it feel good"* — is a 30-second human two-tab eyeball: <code>npm run dev</code>, open two tabs at <code>http://localhost:5173/?lag=60&amp;jitter=20</code>, judge snappiness + remote smoothness. Objective integrity is proven; the aesthetic sign-off is Steven's.</p></li>
+      </ul>
+    </section>
+    <section class="log-day reveal">
+      <h3 class="log-date">2026-06-21</h3>
+      <ul class="log-entries">
+        <li><p><code>[site]</code> <strong>Calmed the portrait hover-spin.</strong> Tuned the turntable to a slower, more deliberate pace (~420ms/frame, ~3.4s per full turn, up from a brisk 130ms) so it reads as a stately turn rather than a whir. One-line tuning of the feature below.</p></li>
+        <li><p><code>[site]</code> <strong>Portraits spin on hover.</strong> Every class portrait (and the Blightwarden's two forms) now turns like a turntable when you hover it, cycling the <strong>8 directional frames</strong> we already have, then snapping back to the front frame on leave. New <code>site/sync-sprites.mjs</code> copies the rotation frames from <code>art/sprites/classes/&lt;id&gt;/rotations/</code> into <code>presentation/assets/sprites/rot/&lt;sprite&gt;/&lt;dir&gt;.png</code> (64 frames, 8 sprites); the page preloads them per-portrait so the spin is flicker-free. Pure view-layer JS + assets; touch devices get a single tap-spin. Also <strong>restored the Blightwarden's base druid portrait</strong> above the Wild ⇄ Grove forms (it was dropped when the two-form showcase landed). Site only.</p></li>
+        <li><p><code>[site]</code> <strong>The Blightwarden shows both his forms on the site.</strong> His card in the Dark Five section no longer shows one generic portrait — it now presents the <strong>Wild ⇄ Grove</strong> duality that *is* the class: <strong>Wild</strong> (the hunt — antlered beast that rends and bleeds) and <strong>Grove</strong> (the deep root — half-tree caster that walls and entangles), side by side with a swap glyph between, in the outsider's forest-green theming. Uses the existing form sprites (<code>art/sprites/classes/blightwarden/forms/{wild,grove}</code>), copied into <code>presentation/assets/sprites/blightwarden-{wild,grove}.png</code>. Site only — no game code.</p></li>
+        <li><p><code>[site]</code> **The presentation is now password-gated — and it's *real* encryption, not a JS show/hide.<strong> The whole site sits behind one access word. The published <code>presentation/index.html</code> is a generated artifact that holds </strong>nothing but AES-GCM ciphertext + an in-browser decryptor<strong>: a PBKDF2 key is derived from the password and the entire document is decrypted client-side, so without the word the content isn't in the page source at all (offline brute-force is the only attack — fine for a friends build). New build pipeline: the editable plaintext lives in </strong><code>site/source.html</code><strong> (private — outside the deploy's <code>publish_dir</code>, never pushed public), and </strong><code>site/build.mjs</code><strong> renders the on-page </strong>Ledger<strong> from <code>planning/RELEASE_NOTES.md</code>, encrypts the composed document, and writes the gate page. The build </strong>self-tests every run** (round-trip, wrong-password reject, abort-on-plaintext-leak); verified end-to-end in headless Chromium. <code>presentation/README.md</code> + <code>/ship</code> (this command) updated for the new *edit-notes → <code>node site/build.mjs</code> → commit* flow. <strong>Whole site is gated now</strong> (the old public marketing hero included); the gate sets <code>noindex</code>. *(Site/tooling only — no game code, nothing touches <code>shared/</code>/<code>content/</code>.)*</p></li>
+        <li><p><code>[site]</code> <strong>State-of-the-Game overview added.</strong> A new insider section on the (now gated) site: <strong>✅ Playable now</strong> (the combat slice), <strong>🔜 Up next</strong> (the throttled-network feel pass), <strong>📐 Designed-not-built</strong> (the armory, the Dark Five + Blightwarden, skill trees, gates/floors, the guild hall) — so a friend opening the site sees where the build actually stands, not just the pitch. Authored in <code>site/source.html</code>.</p></li>
+        <li><p><code>[site]</code> <strong>Fix: the Ledger rendered completely empty.</strong> The release-notes Ledger was wrapped in a <code>.reveal</code> fade-in whose IntersectionObserver only fires at 15% visibility — but the ledger is thousands of px tall, so 15% can never fit the viewport, <code>.in</code> was never added, and it stayed <code>opacity:0</code>. Moved the reveal off the tall container onto each (short) per-day section, so the fade still plays and every entry is shown. Verified on real on-scroll behavior (not force-enabled) in headless Chromium.</p></li>
+        <li><p><code>[design]</code> <strong>The world map — the Gate Board designed.</strong> New <code>planning/WORLDMAP.md</code> + a <code>PROJECT_PLAN.md</code> §10.5 cross-link, filling the loop's unspecified arrow (*return to hall → which gate do we open?*). It's the layer <strong>above</strong> <code>LEVELS.md</code>: that doc is *what a gate is*, this is *how gates are offered and chosen*. Settled as a <strong>between-runs gate-selection screen</strong> (not an explorable overworld — free-roam + mounts stay parked), framed as the <strong>Yggdrasil world-tree</strong>, showing a <strong>server-rolled, refreshing roster</strong> of gate offers (the SL "gates have appeared/closed" beat) — a <strong>shared</strong> party board, not personal inboxes. Key model: a <code>GateOffer</code> is a pre-rolled <code>LEVELS.md</code> <code>Gate</code> *minus its floors* (<code>{rank, realm, modifiers, seed}</code>) — floors aren't assembled until launch, so the board is cheap and the dungeon is built on entry. Progression is <strong>two-axis</strong>: <strong>hunter clearance</strong> raises the rank ceiling (the §2 "deeper gates unlock" arrow made concrete) and <strong>realm unlocks</strong> widen the pools (start in Helheim). Refresh = periodic partial reroll + on-clear reroll + expiry + a <strong>gold-sink manual reroll</strong>, now <strong>DECIDED</strong> as a communal sink paid from <strong>shared guild-hall gold</strong> (plan §9), not personal stash. Gate nodes <strong>surface</strong> the existing <code>LEVELS.md</code> affixes + plan §7a loot knobs as banes/boons (the informed-choice layer — authors no new scaling), and two chase nodes spike the board: <strong>Red Gates</strong> (above-ceiling, modifier-heavy, guaranteed trophy shadow) and <strong>Echo Gates</strong> (the title's namesake — rare <code>spirit</code>-themed endgame). Engineering-wise it's <strong>closer to the loot filter than the dungeon</strong> (server-provided metadata, client-rendered, one *select* input — no new netcode, nothing touches <code>shared/</code>); the only new server logic is the roster roller (invariant #2) + the offer→Gate launch handoff. <strong>Phase 2</strong> (needs ranks + the hall). <strong>Design only — nothing shipped, no schema contract yet.</strong></p></li>
+        <li><p><code>[design]</code> <strong>Skill trees &amp; job advancement — the progression spine designed.</strong> New <code>planning/SKILLTREES.md</code> unifies each class's §5 kit and §6 advancement sketch into <strong>one system, one schema, one set of rules</strong>, and <code>PROJECT_PLAN.md</code> §5/§11 now point to it. The model: <strong>one tree per class read in three depth bands</strong> that map 1:1 onto the RO base→2nd-job→transcendent tiers — *Foundation* (shared spine / the rest of the kit), *Specialization* (the §6 fork into two wings, with a point budget too small to max both, so you <strong>lean</strong>), *Transcendence* (a capstone that holds the class's ultimate <strong>open as a state</strong>). Only <strong>four node types</strong> (unlock / rank / passive / keystone), each backed by *existing* data — an <code>AttackDef</code>/<code>SummonDef</code> id, a number delta, an affix stat mod reusing the <strong>armory's <code>stat</code> vocabulary</strong>, or a sim flag — so <strong>a node never ships new sim code</strong> (invariant #6). <strong>All six class trees are worked out</strong> (§3): the Reaper at full fidelity as the proof, plus the Knight, Monarch, Hexer, Plague Doctor, and Blightwarden. Notable design beats: the <strong>resource gauge is a keystone that physically gates cooldown-first</strong> (an un-specced character is cooldown-only — the §11 "don't over-build early" rule encoded as tree topology), with the <strong>Monarch (innate MP)</strong> and <strong>Hexer (stacks-on-enemy)</strong> as deliberate exceptions; allocation is <strong>server-authoritative and RNG-free</strong> (unlike loot/refine); and two invariant-#4 flags carried through (the Monarch's army-cap nodes can't buy past <code>ROOM_SUMMON_CAP</code>; the Knight's <strong>Taunt nodes are inert until the parked threat/aggro model lands</strong>, <code>ENEMYTACTICS.md</code> §10). <strong>Design only — no code; Phase 3, nothing shipped.</strong> The one parked blocker: the <strong>SP-per-level point budget</strong> waits on the (undesigned) leveling curve. *(The <code>shared/</code>+<code>content/</code> schema is a sketch in §4, not yet a contract — no re-pull needed.)*</p></li>
+        <li><p><code>[client]</code> <strong>The Reaper idle-animates.</strong> His static directional frames are replaced by 8-frame looping idle strips per facing (96px frames, 5 fps), so he now breathes/shifts his scythe in place and swaps the matching idle loop as he turns — <code>MainScene</code> loads them as Phaser spritesheets and registers one looping anim per direction (grave-thrall stays a static frame). Assets live in <code>client/public/sprites/reaper/idle-&lt;dir&gt;.png</code> (+ <code>idle.json</code> manifest), archived under <code>art/sprites/classes/reaper/animations/idle/</code>.</p></li>
+        <li><p><code>[tooling]</code> <strong>Animated-sprite pipeline</strong> (<code>art/sprites/process-gifs.mjs</code>). Turns PixelLab's per-direction animation GIFs dropped in <code>_inbox/</code> into game-ready horizontal PNG strips + a manifest. Decodes GIF frames via Chromium's WebCodecs <code>ImageDecoder</code> (driven by <code>playwright-core</code> against the cached browser); reusable for every future class/enemy animation drop. Pure art tooling — no game-code dependency.</p></li>
+        <li><p><code>[design]</code> <strong>The armory drop spec, made concrete &amp; internally consistent</strong> (<code>PROJECT_PLAN.md</code> §7a). The framework was locked; this fills the four data inputs the server roller actually needs and resolves the loose threads. Adds: <strong>(1) a base catalog</strong> — 11 starter Helheim bases, one per slot, with deterministic <code>implicits</code> and the <code>hands</code>/<code>offhandLegal</code> two-hander flag; <strong>(2) an affix dictionary</strong> as 7 <strong>stat families</strong> (one affix per family per item — promotes the old "no shared stat" rule so <code>atkFlat</code>+<code>atkPct</code> can't stack), with slot-legality and rank-E value ranges; <strong>(3) rarity-weight tables for all six ranks</strong> E→S (filled the missing D/B rows); <strong>(4) a value scalar</strong> E ×1.0 → S ×3.0 that now multiplies <strong>base implicits too</strong> (so a high-rank base isn't swamped by its own affixes and base choice keeps mattering), with <strong>discrete stats excluded</strong> (<code>attackSpeed</code>/<code>moveSpeed</code>/<code>summonCount</code>/<code>sockets</code> — a ×3 on a count would break cooldown floors and the room entity cap, invariant #4); <strong>(5) a per-rank socket roll</strong> (<code>p</code> 0.10→0.70, cap from rarity — deeper gates hit the cap more often, the card-chase reason to re-run a gate) and bumps <strong>epic to 1–2 sockets</strong> so cards are a real chase; <strong>(6) a 6-theme resist taxonomy</strong> (<code>physical/frost/ember/blight/decay/spirit</code>) keyed to realm enemy families instead of nine diluted geographic resists; <strong>(7) drop-quantity rules</strong> on the principle <strong>grade=quantity, gate rank=quality</strong> (trash ~35% drop-gate, elites +chance for a second, bosses 2–3 + a boss-card pull) so deeper gates drop *better*, not a flood. Also adds <code>evasion</code> to the §7a slot→pool wiring's stat list. <strong>Design only — no code.</strong> When the roller is built, <code>content/</code> gains these tables and <code>shared/src/items.ts</code> needs the <code>hands</code>/<code>offhandLegal</code> base fields + <code>evasion</code> in <code>GearStat</code> (flagged <strong>⚠ upcoming shared</strong>).</p></li>
+        <li><p><code>[design]</code> <strong><code>evasion</code> added to the gear stat vocabulary.</strong> <code>PROJECT_PLAN.md</code> §7a already routed "garment rolls evasion/resist" in the slot→pool matrix, but <code>evasion</code> was missing from the stat-vocabulary list itself — added it (dodge chance, the garment axis) so the two halves agree. Design only. Note for the build: the <code>GearStat</code> union in <code>shared/src/items.ts</code> doesn't list <code>evasion</code> yet, so it'll need adding there when the loot roller is implemented.</p></li>
+      </ul>
+    </section>
+    <section class="log-day reveal">
+      <h3 class="log-date">2026-06-20</h3>
+      <ul class="log-entries">
+        <li><p><code>[design]</code> <strong>Enemy tactics — co-op pressure + the harvest economy.</strong> <code>planning/ENEMYTACTICS.md</code> gains <strong>§7.5 (Tactics for co-op)</strong> and <strong>§7.6 (Harvest-tension)</strong>, threaded into the §8 schema and §10 parked list. §7.5 locks the rule that *every standard pack must pose a "who-does-what?" question* (no walk-at-you blobs), maps five coordination problems (punish-clumping, force-a-kill-order, punish-over-spread, split-the-party, frontline/backline) onto the §3.5 technique vocabulary by phase, and adds a <strong><code>targeting</code></strong> selector to <code>EnemyDef</code> — <code>nearest | lowest-hp | farthest</code> in Phase 2 (cheap, no threat table), with <code>highest-threat</code> deferred until the Crimson Knight tank + a threat table exist. §7.6 makes the corpse a *contested resource* (it feeds Arise, PROJECT_PLAN §6) across four levers: the <strong>clock</strong> (corpse lifetime — <strong>RESOLVED</strong>: short + grade-scaled, ~3s/5s/8s = 60/100/160 ticks at 20 Hz by gate rank), the <strong>trap</strong> (a <code>{on:death}</code> burst sitting over a harvestable corpse — pure §3.5 composition, zero new code, P2), the <strong>thief</strong> (the *rival-harvester* enemy pillar — Sin-Eaters consume / necromancers raise your corpses, via a new <strong><code>corpseAction: feed | raise</code></strong> technique field, P3), and the <strong>interrupt</strong> (punished mid-raise — deferred to the Shadow Monarch's Arise write-up). §10 now marks <strong>aggro/threat partially resolved</strong> and <strong>corpse-lifetime resolved</strong>; <code>BESTIARY.md</code> tags the corpse-denial creatures. <strong>Design only — no code</strong>; flags the <strong>⚠ upcoming <code>shared</code></strong> additions (<code>targeting</code>, <code>corpseAction</code>, <code>corpseLifetimeTicks</code>) to coordinate before they land.</p></li>
+        <li><p><code>[shared]</code> <strong>⚠ breaking/shared</strong> — <strong>The item schema grows for dropped gear.</strong> <code>shared/src/items.ts</code> gains the loot vocabulary the armory needs: <code>EquipSlot</code> (the 10-slot RO loadout), <code>GearStat</code> (the closed set of stats gear may touch — <code>maxHp/maxMp/atkFlat/defPct/attackSpeed/critPct/resist:&lt;realm&gt;/summon*</code> …, so gear is never decorative), <code>GateRank</code> (E→S), and two new shapes — <code>AffixDef</code> (the affix registry entry: label, sim stat, <code>[min,max]</code> roll range, slot-legality, pick weight) and <code>BaseItemDef</code> (the deterministic template a drop instantiates). <strong><code>Item</code> now carries <code>slot?</code> and a required <code>implicits[]</code></strong> (base stats, never rolled) alongside the existing rolled <code>affixes[]</code>. Re-pull <code>shared/</code> — every <code>Item</code> literal must now include <code>implicits</code> (the slice loot items were updated in <code>content/</code>).</p></li>
+        <li><p><code>[content]</code> <strong>The armory — loot-roll data tables</strong> (DATA only, invariants #2/#6: the tables live here, the RNG roller stays server-side and isn't built yet). <code>content/src/index.ts</code> adds the <code>AFFIXES</code> registry + a derived <code>affixesForSlot()</code> slot-pool filter, <code>BASE_ITEMS</code> (one Grave-realm/Helheim base per slot kind, to exercise the full loadout), and the roller's dials: <code>AFFIX_BUDGET</code> + <code>SOCKET_RANGE</code> per rarity, <code>RARITY_WEIGHTS</code> + <code>RANK_VALUE_SCALAR</code> per gate rank (deeper gates → better odds and bigger rolls). Existing slice loot now declares <code>slot</code> + <code>implicits</code> to match the schema.</p></li>
+        <li><p><code>[design]</code> <strong>Dropped gear — "the armory" designed</strong> (<code>PROJECT_PLAN.md</code> §7a/§7b, plus the §7 schema sketch). Locks the <strong>full-RO 10-slot loadout</strong> + <strong>hybrid affixes</strong>: three deliberately-separated power axes (deterministic base stats · rolled affixes by rarity · sockets+cards), a rarity→budget table that makes rarity *mean* something, <strong>anti-soup rules</strong> (no two affixes share a stat; the rolled pool is slot-filtered), and the <strong>server-side roll pipeline</strong> (pick rarity by gate rank → instantiate base → draw slot-legal distinct-by-stat affixes → roll values × rank scalar → roll sockets → emit at <code>refineLevel 0</code>; uniques authored, never rolled). Names the <strong>effective-stat derivation</strong> (<code>classBase + Σ implicits + Σ affixes + cards</code>) as the real gate between "drops display" and "drops matter," with the Phase-1 slice lighting up only Weapon + the Reaper's effective-stat path.</p></li>
+        <li><p><code>[design]</code> <strong>Enemy design — co-op tactics + harvest-tension</strong> (<code>ENEMYTACTICS.md</code> §7.5/§7.6, <code>BESTIARY.md</code> note). §7.5 makes "every pack poses a who-does-what question" a rule and adds the <strong><code>targeting</code> selector</strong> primitive (<code>nearest | lowest-hp | farthest</code> in P2; <code>highest-threat</code> deferred to a future threat table + the tank). §7.6 fuses the enemy roster to the Arise economy: corpses become a contested resource via <strong>corpse lifetime</strong> (RESOLVED — short + grade-scaled, ~5s baseline), a corpse-burst harvest-vs-hazard trap, and <strong>rival harvesters</strong> — a new <code>corpseAction: "feed" | "raise"</code> technique primitive (Sin-Eater consumes, Mourning Acolyte / Gravecaller Warlord reanimate). Resolves two parked §10 questions (corpse lifetime; aggro/threat partially). Design only — no code.</p></li>
+        <li><p><code>[design]</code> <strong>Levels &amp; Gates — the dungeon layer designed.</strong> New <code>planning/LEVELS.md</code> + <code>PROJECT_PLAN.md</code> §10.5, resolving the §13 "procedural vs handcrafted" fork to <strong>hybrid</strong>. A gate is the lifecycle of one Colyseus room played as a <strong>3–6-floor descent</strong> (by rank E→S); floors are <strong>server-rolled</strong> (invariant #2) from <strong>hand-authored room templates</strong> (data in <code>content/</code>, invariant #6); the party <strong>advances together</strong> — a room's exit lights only when it's cleared — so all entities stay bunched within the §4 summon/enemy caps and interpolation budget. Five room kinds (combat/hazard/treasure/rest/boss); rank E→S is <strong>data knobs</strong> (floors × pack density × affixes), not bespoke maps; Yggdrasil realms become template/hazard <strong>pools</strong> over shared blocks, not separate engines. Authored hazards and the Blightwarden's rot unify into one server-authoritative <strong><code>GroundEffect</code></strong> system (ownerless+permanent vs. owned+temporary). <strong>Design only — nothing shipped.</strong> Names the one genuinely-netcode piece as the critical path and the only <code>shared/</code> change: <strong>collision in the shared <code>applyInput</code></strong> (a foreseen <strong>⚠ shared</strong> contract change) — to be prototyped in isolation against a tile grid *before* any content layer, since it's the only level work that can destabilise the proven loop.</p></li>
+        <li><p><code>[design]</code> <strong>Enemy technique vocabulary + a shared EffectCore.</strong> <code>planning/ENEMYTACTICS.md</code> gains §3.5: a generic <strong>telegraph → active → recovery</strong> executor and a four-axis *composable* technique model (<strong>shape × motion × rider × trigger</strong>) so the 30th enemy still adds zero sim code (invariant #6). Locks three parked calls (dated 2026-06-20): <strong>projectiles resolved per-shape</strong> — <code>projectile</code> = simulated, dodgeable synced entity (counts against <code>ROOM_ENEMY_CAP</code>) vs. <code>zone</code> = delayed in-place, no entity — dissolving the old hitscan-vs-simulated binary; <strong>riders cut to <code>dot</code>/<code>slow</code> for Phase 2</strong>, with the movement-affecting set (knockback/pull/root/stun/disable) deferred to Phase 3 *together with* the status + prediction/reconciliation work they drag in (invariant #3). Specifies a <strong>faction-agnostic <code>EffectCore</code></strong> shared by the player <code>AttackDef</code>, summon attacks, and enemy techniques (sketched as a new <code>shared/src/combat.ts</code>) and migrates <code>EnemyDef</code> from flat <code>range/damage/attackCooldownTicks</code> to <code>attacks: Technique[]</code>. <strong>Design only — no code yet</strong>, but flags the <strong>⚠ upcoming <code>shared</code></strong> contract change (the <code>EffectCore</code> + the <code>AttackDef</code> migration touches the existing <code>BASIC_MELEE</code>/<code>EXECUTE</code> slice attacks) so it's coordinated before it lands. *(Authored in the working tree outside this session; shipped here.)*</p></li>
+        <li><p><code>[client]</code> <strong>Title screen + control-scheme options.</strong> The client no longer auto-joins on page load — it opens on a minimal front door: a title, <strong>Enter</strong> (button or the Enter key) to connect and play, and <strong>Options</strong> to pick the movement scheme. Both arrow-key and mouse click-to-move already coexisted in <code>MainScene</code>; the new option lets a player *restrict* to <strong>Arrows + Mouse</strong> (default) / <strong>Arrow keys</strong> / <strong>Mouse (click-to-move)</strong>, persisted in <code>localStorage</code>. The scene honors it: in <code>arrows</code> mode the click-to-move handler isn't registered; in <code>mouse</code> mode arrow keys are ignored for movement (combat keys <code>[Space]</code>/<code>[E]</code>/<code>[F]</code> are unaffected in all modes), and the HUD hint shows the active mode. Pure React shell + view preference — no netcode and no game state touched; the scene still sends identical inputs (invariant #1 holds). New <code>client/src/game/controls.ts</code> + <code>client/src/ui/TitleScreen.tsx</code>.</p></li>
+        <li><p><code>[client]</code> <strong>Dev-only latency netsim</strong> — the tooling for the Phase 1 exit gate ("does the co-op loop *feel* good under latency?", PROJECT_PLAN §11). Every <code>[verify]</code> so far ran on localhost (~0ms RTT), which never exercises what prediction/reconciliation/interpolation exist to hide. New <code>client/src/net/netsim.ts</code> installs a <code>WebSocket</code> shim that delays messages <strong>both directions</strong> (<code>?lag=120&amp;jitter=40</code> → ~240ms RTT ±40), preserving order (TCP-like — never reorders/drops, so the room can't desync). Wired into <code>joinGame()</code> *before* the socket opens. Pure client-side test tooling — the server and the netcode contract are untouched (invariant #1); absent/zero <code>?lag=</code> and the shim never installs, so production behaves exactly as before.</p></li>
+        <li><p><code>[ci]</code> <strong>Green-build gate</strong> — new <code>.github/workflows/ci.yml</code>: typecheck + build across all workspaces on every push to <code>main</code> and every PR, so the build can't silently rot (Phase 0 deliverable, PROJECT_PLAN §12). Concurrency-cancels stale runs per ref.</p></li>
+        <li><p><code>[design]</code> <strong>The Dark Five is fully written up</strong> — new per-class docs for the four remaining members: <code>planning/CLASSES/SHADOW_MONARCH.md</code> (the flagship summoner the game is named for), <code>CRIMSON_KNIGHT.md</code> (tank), <code>HEXER.md</code> (caster/control), and <code>PLAGUE_DOCTOR.md</code> (dark support healer). <code>PROJECT_PLAN.md</code> §5 now links all six write-ups. <strong>Design ahead of build — nothing shipped</strong>; only the Reaper is playable in the slice, the rest are Phase 2 proposals to argue with.</p></li>
+        <li><p><code>[design]</code> <strong>Renamed <code>ENEMIES.md</code> → <code>ENEMYTACTICS.md</code></strong> and rewired every cross-reference (PROJECT_PLAN, BESTIARY, REAPER, and the new class docs all point at the new name). Done via <code>git mv</code> so history follows the file. The historical 2026-06-18 changelog entry is left as-is, as an accurate record of the original name. Planning only — no code or schema change.</p></li>
+      </ul>
+    </section>
+    <section class="log-day reveal">
+      <h3 class="log-date">2026-06-19</h3>
+      <ul class="log-entries">
+        <li><p><code>[client]</code> <strong>HUD stays fixed under zoom.</strong> Follow-up to mousewheel zoom: the camera scales <code>scrollFactor(0)</code> objects around its center too, so zooming in was magnifying the HP/Gold/loot-filter readouts and sliding them off-screen. <code>layoutHud()</code> now counter-scales each pinned element by <code>1/zoom</code> and re-solves its position so its anchor lands back on the intended screen pixel — constant size, fixed spot, at any zoom (identity at zoom 1; tracks window resize via live <code>centerX/centerY</code>). The world still zooms; only the HUD is held.</p></li>
+        <li><p><code>[client]</code> <strong>Mousewheel zoom.</strong> The camera view can now be zoomed in/out with the mousewheel — each notch scales the view by a multiplicative step (so a notch feels the same at any zoom), clamped to <code>0.6×–2.4×</code>, and the camera *eases* toward the new zoom (matching the follow smoothing) so it glides rather than snaps. Pure view-layer: it never touches the sim or what we send the server (invariant #1), and Phaser keeps pointer world coords correct under zoom so click-to-move and the screen-pinned HUD are unaffected.</p></li>
+        <li><p><code>[client]</code> <strong>Camera follows you + full-window view.</strong> The dungeon view was a fixed 800×600 box with a static camera, which made click-to-move *feel* range-limited (you could only click inside the box, and walking to the edge took you off-screen). The canvas now <strong>fills the window</strong> (<code>Scale.RESIZE</code>) and the camera <strong>follows the local player</strong> with a deadzone (you move freely near center; the view scrolls only when you travel far). The world is unbounded server-side, so this makes travel effectively unlimited. HUD is pinned to the screen (<code>scrollFactor 0</code>); click-to-move still maps correctly through the scrolled camera.</p></li>
+        <li><p><code>[shared]</code> <strong>⚠ breaking/shared</strong> — <strong>Click-to-move + a vector input model.</strong> <code>InputMessage</code> is now a per-tick movement vector <code>{ mvx, mvy }</code> (magnitude ≤ 1) instead of <code>up/down/left/right</code> booleans, and the shared <code>applyInput</code> moves <code>MOVE_SPEED ×</code> it. The client builds that vector from EITHER held keys OR the heading toward a clicked point — RO/Diablo style: click the ground and the Reaper walks there and stops (a converging marker shows the spot; keys override and cancel the target). The target stays client-side, so <code>GameRoom</code> is unchanged and prediction/reconciliation are untouched. Bonus: diagonal movement is no longer ~40% faster (the vector is normalized). <strong>Re-pull <code>shared/</code> and restart the server</strong> — old boolean clients won't move against the new server.</p></li>
+        <li><p><code>[client]</code> / <code>[art]</code> <strong>Directional sprites for the Reaper &amp; Grave Thrall</strong> — <code>MainScene</code> now draws players and enemies as <strong>8-direction pixel sprites</strong> instead of placeholder circles: it preloads <code>/sprites/...</code>, builds a <code>Sprite</code> per entity, swaps the rotation from movement heading, and sets render depth (summons stay wispy violet circles). The art ships with it — source in <code>art/sprites/enemies/grave-thrall/</code>, runtime copies in <code>client/public/sprites/{reaper,grave-thrall}/</code> — so the rendering code and the assets it loads land together and the client actually draws them. Cosmetic only: positions are still server-authoritative + interpolated (invariants #1/#3).</p></li>
+        <li><p><code>[design]</code> <strong>Blightwarden — the outsider sixth class</strong> — new <code>planning/CLASSES/BLIGHTWARDEN.md</code> + an "outsider" section in <code>PROJECT_PLAN.md</code> §5. A *dark druid* who stands apart from the death-court: claims the floor with spreading <strong>Blight</strong> terrain, shifts <strong>Wild ⇄ Grove</strong> forms, and <strong>composts</strong> the dead into a <strong>Loam</strong> gauge (structural mirror of the Reaper's Solace). <strong>Design only — nothing shipped.</strong> Its guardrails flag the one genuinely new sim primitive in the whole roster — <strong>server-owned spreading terrain zones</strong> — as the Phase 2 risk to watch; everything else is data on existing systems. Brand stays "the Dark Five."</p></li>
+        <li><p><code>[design]</code> <strong>Reaper open questions resolved</strong> — <code>planning/CLASSES/REAPER.md</code> §9 turns the four parked questions into decisions and threads them through §2/§3/§5/§8: <strong>Solace kept</strong> (a build-and-spend gauge so the Reaper can't read as a re-skinned Monarch — slice stays cooldown-only, the gauge lands with the Phase 2 kit); the Last Mercy is the <strong>forgotten old way, not a faction at war</strong> with the Monarch (he's a teammate); the flash-shadow <strong>reuses the Monarch's raise taxonomy</strong> as a capped, ephemeral instance (one system, not two — invariant #6); benedictions are <strong>text-first now, VO in the Phase 3 audio pass</strong> (+ seed lines). Planning only.</p></li>
+        <li><p><code>[client]</code> <strong>Combat hit feedback</strong> — enemy↔player hits now *read* instead of silently ticking HP: a floating damage number, a red impact ring + a brief color-flash on the struck entity, the attacker <strong>jabbing in</strong> while the victim <strong>recoils</strong> (a decaying render offset layered on top of interpolation, so it never touches the authoritative sim — invariant #1/#3), and a small screen shake when *you're* the one hit. Symmetric — striking the thrall flashes it too. Purely cosmetic; the server still owns all damage.</p></li>
+        <li><p><code>[design]</code> <strong>Reaper class write-up</strong> — new <code>planning/CLASSES/REAPER.md</code>: the full fiction + design for the Reaper (the slice's one playable class). Its <strong>shipped core is marked locked/canonical</strong> (HP, 50% life-steal, the *Last Rite* execute, the single flash-shadow); everything past that is Phase 2–3 advancement as proposal. <code>PROJECT_PLAN.md</code> §5 now links out to <code>CLASSES/</code>. Planning only — no code/schema change.</p></li>
+      </ul>
+    </section>
+    <section class="log-day reveal">
+      <h3 class="log-date">2026-06-18</h3>
+      <ul class="log-entries">
+        <li><p><code>[design]</code> <strong>Enemy &amp; mob design plan</strong> — new <code>planning/ENEMIES.md</code>. Codifies the principles (mobs are server-authoritative synced entities; density is a netcode budget; enemies-as-data, invariant #6), the <strong>archetype taxonomy that mirrors the shadow taxonomy 1:1</strong> (what you kill = what you can raise, §6), a small AI behavior library, E→S grades tied to gate ranks, per-realm families, the spawn director + a needed <code>ROOM_ENEMY_CAP</code>, the additive <code>EnemyDef</code> fields each future system will need (flagged ⚠ for whoever lands them later), and a phased rollout. Planning only — no code or schema changes yet.</p></li>
+        <li><p><code>[design]</code> <strong>Bestiary seed-list</strong> — new <code>planning/BESTIARY.md</code>. ~70 concrete creatures across 11 categories (undead, beasts, insects, goblinoids, demons, giants, constructs, elementals, plants, aerial, eldritch) plus 9 named MVP bosses, each tagged with archetype (→ shadow it yields), grade, and realm. Original names with <code>echoes:</code> inspiration notes (Ragnarok Online / Solo Leveling / Diablo / Norse). Seed-list, not balance — becomes <code>content/</code> <code>EnemyDef</code> data when built.</p></li>
+        <li><p><code>[design]</code> <strong>Mounts on the roadmap</strong> — <code>PROJECT_PLAN.md</code> §11 (Phase 3) gains traversal-only <strong>shadow steeds</strong> (server-auth speed state, auto-dismount on combat, interpolated for remote riders, defined as data); §13 records the parked scope fork (traversal vs. mounted combat vs. summon-tied). Cross-links added from §6/§10 to the new enemy docs.</p></li>
+        <li><p><code>[shared]</code> <strong>⚠ breaking/shared</strong> — Reaper netcode + type additions: a new <code>Ability</code> message + <code>AbilityMessage</code> (client → server *intent* only — server owns the effect/cooldown/summon), the <code>ClassDef</code>/<code>SummonDef</code> shapes and the <code>ClassId</code> union, <strong>and <code>EnemyDef</code> now requires <code>damage</code> + <code>attackCooldownTicks</code></strong> (every enemy def must set them). Re-pull <code>shared/</code>.</p></li>
+        <li><p><code>[content]</code> The <strong>Reaper kit as data</strong> (invariant #6): <code>REAPER</code> class (100 HP, <strong>50% melee life-steal</strong>), the <code>EXECUTE</code> ability (heavy strike that *finishes* anything at/below <strong>35% HP</strong> and raises a shadow), the <code>FLASH_SHADOW</code> summon (30 HP, ~5s lifespan), and the summon caps (<strong>1 per Reaper</strong>, 48 per room). The <strong>Grave Thrall</strong> gains teeth: <code>damage</code> 6 on a ~0.8s bite cadence.</p></li>
+        <li><p><code>[server]</code> <strong>The Reaper, server-authoritative.</strong> Basic swings now <strong>life-steal</strong> for the attacker; the <code>execute</code> ability runs on its own cooldown and, on a killing/executing blow, raises a single <strong>flash-shadow</strong> (per-Reaper cap enforced, invariant #4). Flash-shadows are lightweight server-sim summons (attack the nearest enemy → chase → trail the owner; dissolve on death or lifespan). The Grave Thrall now <strong>deals contact damage</strong> on a cadence, and a downed player <strong>respawns at full HP</strong> at the System's spawn. New <code>Summon</code> schema + <code>summons</code> map; <code>classId</code>/<code>maxHp</code> added to <code>Player</code>.</p></li>
+        <li><p><code>[client]</code> Render <strong>flash-shadows</strong> (wispy violet, <strong>interpolated</strong> via the same buffer path as enemies — never predicted, invariant #3); <code>[E]</code> fires <strong>execute</strong> (sends intent + a violet finisher ring); the HUD now shows class + live <strong>HP</strong>.</p></li>
+        <li><p><code>[shared]</code> <strong>⚠ breaking/shared</strong> — Item-schema + netcode-contract additions: <code>RARITY_ORDER</code> + <code>rarityRank()</code> and <code>LOOT_PICKUP_RADIUS</code> in <code>shared/src/items.ts</code>, and a new <code>Pickup</code> message + <code>PickupMessage</code> in <code>shared/src/messages.ts</code>. The pickup radius lives in <code>shared/</code> (not <code>content/</code>) because both the server (enforce) and client (gate auto-pickup) need it. Re-pull <code>shared/</code>.</p></li>
+        <li><p><code>[content]</code> Add the <strong>Grave Thrall loot table</strong> (<code>GRAVE_THRALL_LOOT</code>, weighted common→epic) + the <code>LootTableEntry</code> shape, as data (invariant #6). The rarity spread is deliberate so the rarity colors + loot filter are actually exercised.</p></li>
+        <li><p><code>[server]</code> <strong>Loot pipeline.</strong> On a kill the server rolls loot <strong>independently per player</strong> with its own RNG (invariants #2/#5: instanced personal loot — no shared pool, no ninja-looting): new <code>LootDrop</code> schema + <code>loot</code> map, each drop owner-tagged. <strong>Auto-loot is authoritative</strong> — the client asks, the server grants only if the asker *owns* the drop and is within reach — and credits personal <code>gold</code> on <code>Player</code>.</p></li>
+        <li><p><code>[client]</code> Render <strong>only our own</strong> drops as rarity-colored gems; <strong>PoE-style auto-pickup</strong> (<code>§8</code>) sends a pickup intent for in-reach drops that pass the filter; a cycle-able <strong>loot filter</strong> (<code>[F]</code>) with filtered drops <strong>dimmed</strong> (not auto-looted); plus a gold HUD.</p></li>
+        <li><p><code>[verify]</code> Confirmed on both surfaces. Socket driver: instanced drop per player, ownership + proximity both reject cheats, personal gold credited — 11/11. Browser: kill → auto-loot → <code>Gold 3</code>; raise filter to ≥ unique → next common drop is left dimmed on the ground, gold unchanged. (localhost ≈ 0 latency — mechanics proven; feel still wants a throttled-network pass.)</p></li>
+      </ul>
+    </section>
+    <section class="log-day reveal">
+      <h3 class="log-date">2026-06-17</h3>
+      <ul class="log-entries">
+        <li><p><code>[shared]</code> <strong>⚠ breaking/shared</strong> — Add <code>EnemyDef</code>/<code>AttackDef</code> types (<code>shared/src/entities.ts</code>) and the <code>Attack</code> message + <code>AttackMessage</code> (<code>shared/src/messages.ts</code>). New netcode-contract message; re-pull <code>shared/</code>.</p></li>
+        <li><p><code>[content]</code> Add the Phase 1 combat data: the <strong>Grave Thrall</strong> enemy (60 HP, slow chase, short reach), the <strong>basic melee</strong> swing (56 reach / 20 dmg / 8-tick cooldown), and enemy spawn + 3s respawn timing. Balance lives here as data so it's editable without touching the sim (invariant #6).</p></li>
+        <li><p><code>[server]</code> First enemy + real-time combat: an <code>Enemy</code> schema/map in <code>GameState</code>; server-authoritative <strong>chase AI</strong> (walks toward the nearest player, stops at reach) and <strong>hit resolution</strong> (a swing damages the nearest enemy in range, gated by a server-side cooldown — invariants #1/#2); enemy <strong>death → 3s respawn</strong>. The thrall is killable but harmless for now (deals no damage yet).</p></li>
+        <li><p><code>[client]</code> Render the enemy (crimson, <strong>interpolated</strong> via the same buffer path as remote players — never predicted, invariant #3), an HP bar that drains as it's hit, and a <strong>Spacebar</strong> attack that sends the intent + a cosmetic swing ring.</p></li>
+        <li><p><code>[verify]</code> Confirmed live with two tabs: thrall chases into range and stops, melee drops it 60→40→20→dead (cooldown-gated), it respawns at full HP and resumes chasing, and both clients see the same shared enemy (enemies are shared; only loot is instanced).</p></li>
+        <li><p><code>[shared]</code> <strong>⚠ breaking/shared</strong> — Add <code>shared/src/movement.ts</code>: the single <code>applyInput(pos, intent)</code> movement model plus the <code>MOVE_SPEED</code> constant, now exported from <code>@etom/shared</code>. Both server authority and client prediction run this *same* function so they can't diverge (the root cause of rubber-banding). <code>MOVE_SPEED</code> moved out of the server; re-pull <code>shared/</code>. the single <code>applyInput(pos, intent)</code> movement model plus the <code>MOVE_SPEED</code> constant, now exported from <code>@etom/shared</code>. Both server authority and client prediction run this *same* function so they can't diverge (the root cause of rubber-banding). <code>MOVE_SPEED</code> moved out of the server; re-pull <code>shared/</code>.</p></li>
+        <li><p><code>[server]</code> Rework the input model to <strong>one input = one simulation step</strong>: <code>GameRoom</code> now buffers a per-player input *queue* and drains the whole queue each tick (was: keep only the latest input, apply once/tick). This 1:1 correspondence is what lets the client reconcile without drift. Movement now runs through the shared <code>applyInput</code>.</p></li>
+        <li><p><code>[server]</code> Raise <code>maxClients</code> 4 → 8 to match the 5+ party target (PROJECT_PLAN §4, one per Dark Five class, with headroom).</p></li>
+        <li><p><code>[client]</code> Implement the Phase 1 netcode "feel": local player is <strong>predicted</strong> (input applied instantly, no RTT wait) and <strong>reconciled</strong> against the server (snap to authoritative + replay un-acked inputs); remote players are <strong>interpolated</strong> (lerped between buffered snapshots, rendered ~100ms in the past). Input is now sampled at a fixed <code>TICK_RATE</code> via a delta accumulator (FPS-independent), not once per render frame.</p></li>
+        <li><p><code>[verify]</code> Confirmed live with two browser tabs: predicted leads authoritative by exactly the in-flight input count, reconciliation drift = 0 after sustained movement, remote interp trails-then-converges, and concurrent two-player movement stays in sync. (localhost ≈ 0 latency, so the *mechanics* are proven correct; true latency-hiding feel still wants a throttled-network pass.)</p></li>
+      </ul>
+    </section>
+    <section class="log-day reveal">
+      <h3 class="log-date">2026-06-16</h3>
+      <ul class="log-entries">
+        <li><p><code>[site]</code> Add auto-deploy: <code>.github/workflows/deploy-presentation.yml</code> publishes <code>presentation/</code> to the public <code>echoesofthemonarch-presentation</code> repo (GitHub Pages, <code>gh-pages</code> branch) on every push to <code>main</code> touching <code>presentation/**</code>. Uses an SSH deploy key stored in the <code>SITE_DEPLOY_KEY</code> secret. This repo stays private; only the site folder is pushed out.</p></li>
+        <li><p><code>[site]</code> Serve the presentation on the custom apex domain <code>echoes-of-the-monarch.com</code> (deploy workflow writes a matching <code>CNAME</code> on every publish).</p></li>
+        <li><p><code>[site]</code> Add a "The Descent So Far" devlog section to <code>presentation/index.html</code>, with a <code>&lt;!-- DEVLOG ENTRIES --&gt;</code> marker for new entries.</p></li>
+        <li><p><code>[tooling]</code> <code>/ship</code> now syncs the public devlog: it adds a player-facing devlog entry for visible changes and explicitly skips internal ones (netcode, refactors), which stay in this log only.</p></li>
+        <li><p><code>[docs]</code> Rewrite <code>presentation/README.md</code> publish section for the auto-sync model (deploy-key setup, no hand-copying).</p></li>
+        <li><p><code>[design]</code> Bump party target <strong>3 → 5 hunters</strong> (one per Dark Five class) across <code>PROJECT_PLAN.md</code> and the presentation hero. Netcode/entity caps/room sizing must be designed for ≥5. *(Pre-existing working-tree change, landed here.)*</p></li>
+        <li><p><code>[tooling]</code> Add <code>/ship</code> custom slash command (<code>.claude/commands/ship.md</code>): reviews the diff, appends a dated summary here, commits with a conventional-commit message, and pushes the feature branch — enforcing the "never commit to <code>main</code>" rule.</p></li>
+        <li><p><code>[tooling]</code> Seed this release-notes log that <code>/ship</code> writes to.</p></li>
+        <li><p><code>[repo]</code> Add <code>echoesofthemonarch.code-workspace</code> VSCode workspace file.</p></li>
+      </ul>
+    </section>
+  </div>
+  </div>
+</section>
+
+<!-- ============ FINALE ============ -->
+<section class="finale">
+  <div class="wrap reveal">
+    <img class="emblem" src="assets/emblem-icon.svg" alt="" aria-hidden="true" />
+    <p class="eyebrow">The gate is open</p>
+    <h2 class="section-title">Will you answer the throne?</h2>
+    <p class="lede" style="margin-bottom:34px;">
+      Echoes of the Monarch is in active development — a co-op raid built for a small party of friends.
+    </p>
+    <div class="cta-row" style="justify-content:center;">
+      <a class="btn btn-primary" href="#">Follow the Descent</a>
+      <a class="btn btn-ghost" href="#top">Back to the Top</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Echoes of the Monarch — Every shadow remembers its king.
+    <div class="note">A real-time co-op dark-fantasy dungeon crawler · in development</div>
+  </div>
+</footer>
+
+<script>
+  // ---- ember / mote field in the hero ----
+  (function () {
+    const canvas = document.getElementById('embers');
+    if (!canvas) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ctx = canvas.getContext('2d');
+    let w, h, motes;
+
+    function resize() {
+      w = canvas.width = canvas.offsetWidth * devicePixelRatio;
+      h = canvas.height = canvas.offsetHeight * devicePixelRatio;
+      const count = Math.min(70, Math.floor((w * h) / (38000 * devicePixelRatio)));
+      motes = Array.from({ length: count }, spawn);
+    }
+    function spawn() {
+      const teal = Math.random() > 0.25;
+      return {
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: (Math.random() * 1.6 + 0.4) * devicePixelRatio,
+        vy: -(Math.random() * 0.3 + 0.05) * devicePixelRatio,
+        vx: (Math.random() - 0.5) * 0.15 * devicePixelRatio,
+        a: Math.random() * 0.5 + 0.1,
+        tw: Math.random() * 0.02 + 0.005,
+        teal,
+      };
+    }
+    function frame() {
+      ctx.clearRect(0, 0, w, h);
+      for (const m of motes) {
+        m.y += m.vy; m.x += m.vx; m.a += m.tw;
+        const alpha = (Math.sin(m.a) * 0.4 + 0.5) * 0.7;
+        if (m.y < -10) { m.y = h + 10; m.x = Math.random() * w; }
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+        ctx.fillStyle = m.teal
+          ? 'rgba(143,240,230,' + alpha + ')'
+          : 'rgba(255,97,119,' + (alpha * 0.7) + ')';
+        ctx.shadowBlur = 8 * devicePixelRatio;
+        ctx.shadowColor = m.teal ? 'rgba(127,214,208,0.8)' : 'rgba(224,69,95,0.7)';
+        ctx.fill();
+      }
+      requestAnimationFrame(frame);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    if (!reduce) frame();
+  })();
+
+  // ---- reveal-on-scroll ----
+  (function () {
+    const els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { els.forEach(e => e.classList.add('in')); return; }
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }, { threshold: 0.15 });
+    els.forEach(e => io.observe(e));
+  })();
+
+  // ---- hover-to-rotate portraits ----
+  // Each [data-sprite] portrait has 8 directional frames under
+  // assets/sprites/rot/<id>/. Hovering spins through them like a turntable;
+  // leaving snaps back to the front (south) frame it started on.
+  (function () {
+    const DIRS = ['south','south-east','east','north-east','north','north-west','west','south-west'];
+    const STEP_MS = 420;
+    const imgs = document.querySelectorAll('img[data-sprite]');
+    imgs.forEach((img) => {
+      const id = img.getAttribute('data-sprite');
+      const base = img.getAttribute('src');
+      const frames = DIRS.map((d) => 'assets/sprites/rot/' + id + '/' + d + '.png');
+      let preloaded = false, timer = null, i = 0;
+      const host = img.closest('.portrait') || img;
+      host.style.cursor = 'pointer';
+
+      function preload() {
+        if (preloaded) return;
+        preloaded = true;
+        frames.forEach((src) => { const im = new Image(); im.src = src; });
+      }
+      function start() {
+        preload();
+        if (timer) return;
+        timer = setInterval(() => { i = (i + 1) % DIRS.length; img.src = frames[i]; }, STEP_MS);
+      }
+      function stop() {
+        if (timer) { clearInterval(timer); timer = null; }
+        i = 0; img.src = base;
+      }
+      host.addEventListener('mouseenter', start);
+      host.addEventListener('mouseleave', stop);
+      // touch: a tap does one quick spin, then settles
+      host.addEventListener('touchstart', () => { start(); setTimeout(stop, DIRS.length * STEP_MS + 40); }, { passive: true });
+    });
+  })();
+</script>
+</body>
+</html>
