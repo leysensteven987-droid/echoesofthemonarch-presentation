@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Echoes of the Monarch">
+  <!--
+    Echoes of the Monarch — the mark.
+    The crimson diamond of the command shell's hold screen (shell/public/index.html),
+    lifted into the brand: one drawn stroke, red glow, no ground of its own.
+    Transparent so it sits on any surface — favicon, header, site emblem.
+  -->
+  <defs>
+    <filter id="halo" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="hot" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
+    <path id="d" d="M256 72 L408 256 L256 440 L104 256 Z"/>
+  </defs>
+  <use href="#d" fill="none" stroke="#e0455f" stroke-width="34" opacity="0.5" filter="url(#halo)"/>
+  <use href="#d" fill="none" stroke="#ff6177" stroke-width="9" opacity="0.85" filter="url(#hot)"/>
+  <use href="#d" fill="none" stroke="#e0455f" stroke-width="11" stroke-linejoin="round"/>
+</svg>
